@@ -1,31 +1,36 @@
 
 import time
 import datetime
+
 try:
-    import paho.mqtt.client as paho
+    import paho.mqtt.client as mqtt
 except:
-    print("Library paho not install")
+    print("Library paho not install : pip install paho-mqtt")
     exit()
 
-broker = "192.168.2.101"
-port = 1883
+# MQTT Broker
+broker_address = "192.168.2.100"  # Change this to your MQTT broker's address
+port = 1883  # Default MQTT port
+topic = "time"  # Topic to publish the time
 
-def on_publish(client,data,result):
-    # print("data publish")
-    pass
+# Create a MQTT client instance
+client = mqtt.Client(protocol=mqtt.MQTTv311)  # Specify MQTT protocol version
 
+# Connect to the MQTT broker
+client.connect(broker_address, port)
 
-def main():
-    print("MQTT - Clock - Python")
-    client = paho.Client("clock1")
-    client.on_publish = on_publish
-    client.connect(broker,port)
-    loopVar = True
-    while(loopVar):
-        client.loop()
-        client.publish("clock/now",time.strftime("%H:%M:%S", time.localtime()))
-        time.sleep(5)
+while True:
+    # Get current time
+    current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+    # Publish the time to the MQTT topic
+    client.publish(topic, current_time)
 
-if __name__== "__main__" :
-    main()
+    # Print the time for confirmation
+    print("Published:", current_time)
+
+    # Wait for 1 second before publishing again
+    time.sleep(1)
+
+# Disconnect from the MQTT broker
+client.disconnect()
