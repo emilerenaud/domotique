@@ -4,7 +4,10 @@ import time
 import datetime
 
 # Set up logging
-logging.basicConfig(filename='/home/emile/domotique/python-mqtt/mqtt_publisher.log', level=logging.INFO)
+try:
+    logging.basicConfig(filename='/home/emile/domotique/python-mqtt/mqtt_publisher.log', level=logging.INFO)
+except FileNotFoundError:
+    logging.basicConfig(level=logging.INFO)
 
 # MQTT Broker
 broker_address = "192.168.2.100"  # Change this to your MQTT broker's address
@@ -17,14 +20,24 @@ def on_connect(client, userdata, flags, rc):
     else:
         logging.error("Failed to connect to MQTT broker, rc=%d", rc)
 
+def on_disconnect(client, userdata, rc):
+    if rc != 0:
+        logging.warning("Disconnected from MQTT broker, trying to reconnect...")
+        try:
+            client.reconnect()
+        except:
+            logging.error("Failed to reconnect to MQTT broker")
+            on_disconnect(client, userdata, rc)
+
 def on_publish(client, userdata, mid):
     logging.info("Message published")
 
 # Create a MQTT client instance
-client = mqtt.Client("Time_Publisher")
+client = mqtt.Client(protocol=mqtt.MQTTv311) 
 
 # Set callback functions
 client.on_connect = on_connect
+client.on_disconnect = on_disconnect
 client.on_publish = on_publish
 
 # Connect to the MQTT broker
