@@ -1,0 +1,8 @@
+{
+    "cmake.configureOnOpen": false,
+    "files.associations": {
+        "memory": "cpp",
+        "random": "cpp",
+        "optional": "cpp"
+    }
+}

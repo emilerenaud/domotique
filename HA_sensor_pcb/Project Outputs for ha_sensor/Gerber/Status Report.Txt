@@ -1,0 +1,12 @@
+Output: NC Drill Files
+Type  : NC Drill
+From  : PCB Document [ha_sensor.PcbDoc]
+   Generated File[ha_sensor.TXT]
+   Generated File[ha_sensor.LDP]
+   Generated File[ha_sensor.DRR]
+
+
+Files Generated   : 3
+Documents Printed : 0
+
+Finished Output Generation At 12:06:54 On 2024-07-19
